@@ -73,18 +73,22 @@ A Keras implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/
     ```
         path="C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/JPEGImages/1016/*.jpg"
         outdir = "C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/SegmentationClass"
+        gps_file =  "C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/gps_infos.csv"
     ```
 
     ```
         path="你的输入图片路径/*.jpg"
         outdir = "你的输出图片路径"
+        gps_file = "你的gps输出图片路径"
     ```
     之后运行：
     ```
         python tw_yolo.py
     ```
     结果图片会存放在outdir中
-    
+7. 视频播放
+```
+    python tw_yolo_video.py 1016-1020.3gp out.3gp gpsinfo.csv
 ---
 > 以下为原始keras-yolo的readme可做参考
 
