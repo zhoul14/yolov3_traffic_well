@@ -1,6 +1,7 @@
 """
 Retrain the YOLO model for your own dataset.
 """
+# -*- coding: utf-8 -*-  
 
 import numpy as np
 import keras.backend as K
@@ -128,6 +129,7 @@ def create_model(input_shape, anchors, num_classes, load_pretrained=False, freez
         [*model_body.output, *y_true])
     model = Model([model_body.input, *y_true], model_loss)
     return model
+# 图片随机化、翻转、平移增加训练样本
 def data_generator(annotation_lines, batch_size, input_shape, anchors, num_classes):
     n = len(annotation_lines)
     np.random.shuffle(annotation_lines)
@@ -146,6 +148,7 @@ def data_generator(annotation_lines, batch_size, input_shape, anchors, num_class
         y_true = preprocess_true_boxes(box_data, input_shape, anchors, num_classes)
         yield [image_data, *y_true], np.zeros(batch_size)
 
+# 图片样本生成总函数 调用上面的函数
 def data_generator_wrap(annotation_lines, batch_size, input_shape, anchors, num_classes):
     n = len(annotation_lines)
     if n==0 or batch_size<=0: return None
