@@ -89,10 +89,10 @@ class YOLO(object):
                 len(self.class_names), self.input_image_shape,
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
-
+    # 识别图片实体、识别经纬度主程序
     def detect_image(self, image):
         start = timer()
-
+        # 图片大小尺寸标准化
         if self.model_image_size != (None, None):
             assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
             assert self.model_image_size[1]%32 == 0, 'Multiples of 32 required'
@@ -103,12 +103,9 @@ class YOLO(object):
             boxed_image = letterbox_image(image, new_image_size)
         image_data = np.array(boxed_image, dtype='float32')
 
-        # print(image_data.shape)
-        # print(image.size)
-        # print (self.model_image_size)
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)  # Add batch dimension.
-
+        # 用yolo识别图片实体
         out_boxes, out_scores, out_classes = self.sess.run(
             [self.boxes, self.scores, self.classes],
             feed_dict={
@@ -123,24 +120,26 @@ class YOLO(object):
                     size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
         thickness = (image.size[0] + image.size[1]) // 300
         gps_infos = []
+        # 遍历识别结果（一张图片可能有多个井盖/路标)
         for i, c in reversed(list(enumerate(out_classes))):
             predicted_class = self.class_names[c]
             box = out_boxes[i]
             score = out_scores[i]
-
+            
             label = '{} {:.2f}'.format(predicted_class, score)
             top, left, bottom, right = box
             top = max(0, np.floor(top + 0.5).astype('int32'))
             left = max(0, np.floor(left + 0.5).astype('int32'))
             bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
             right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
-
+            # 命令行中输出识别结果的位置和种类信息
             print(label, (left, top), (right, bottom))
+            # 通过位置避免误判井盖
             if 'well cover' in label and left < 50 and top < 750:
                 continue
-
+            # gps识别程序（见tessocr.py）
             gps_infos.append(tessocr.get_GPS_info(image, predicted_class))
-
+            # 画图，展示结果
             draw = ImageDraw.Draw(image)
             label_size = draw.textsize(label, font)
 
@@ -149,7 +148,6 @@ class YOLO(object):
             else:
                 text_origin = np.array([left, top + 1])
 
-            # My kingdom for a good redistributable image drawing library.
             for i in range(thickness):
                 draw.rectangle(
                     [left + i, top + i, right - i, bottom - i],
@@ -159,6 +157,7 @@ class YOLO(object):
                 fill=self.colors[c])
             draw.text(text_origin, label, fill=(0, 0, 0), font=font)
             del draw
+            # 画图结束
 
         end = timer()
         print(end - start)
@@ -225,8 +224,11 @@ def detect_video(yolo, video_path, output_path="",gps_path=""):
 
 import glob
 def detect_img(yolo):
+    # 待识别文件夹
     path="C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/JPEGImages/1016/*.jpg"
+    # 输出文件夹
     outdir = "C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/SegmentationClass"
+    # 输出gps结果文件夹
     gps_file =  "C:/Users/12142/Desktop/keras-yolo3/VOCdevkit/VOC2007/gps_infos.csv"
     f = open(gps_file,'w')
     csv_writer = csv.writer(f)
@@ -234,6 +236,7 @@ def detect_img(yolo):
 
     for jpgfile in glob.glob(path):
         img = Image.open(jpgfile)
+        # 主识别流程
         img,gps_infos = yolo.detect_image(img)
         for s in gps_infos:
             a = s.split('|')
