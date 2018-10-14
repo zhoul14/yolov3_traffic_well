@@ -23,6 +23,7 @@ from yolo3.utils import get_random_data
 
 
 def _main():
+    # 初始化
     annotation_path = 'train_tw.txt'
     log_dir = 'logs/'
     classes_path = 'model_data/tw_classes.txt'
@@ -30,7 +31,9 @@ def _main():
     class_names = get_classes(classes_path)
     anchors = get_anchors(anchors_path)
     input_shape = (416,416) # multiple of 32, hw
+    # 读取/生成原始模型文件
     model = create_tiny_model(input_shape, anchors, len(class_names) )
+    # 训练
     train(model, annotation_path, input_shape, anchors, len(class_names), log_dir=log_dir)
 
 def create_tiny_model(input_shape, anchors, num_classes, load_pretrained=False, freeze_body=2,
