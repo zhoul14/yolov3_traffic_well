@@ -24,7 +24,8 @@ def get_GPS_info(image,className,showPic=False,offsetx1=0,offsetx2=0,offsety1=0,
     # image = Image.open(imageFile)
     # 已经通过实验找到图片中的GPS固定位置
     regionx=(882,1000,1117,1058)#x的坐标
-    regiony=(1130,1000,1342,1058)#x的坐标
+    regiony=(1130,1000,1342,1058)#y的坐标
+    # 转换成黑白图像
     out = binarization(image)
     out_y=out.crop(regiony)
     out_x=out.crop(regionx)
