@@ -59,7 +59,7 @@ A Keras implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/
     ```
 4. 将权重文件yolo.h5放置到yolov3_traffic_well/model_data路径下（不然会运行第5步的python yolo.py会报错：找不到yolo.h5文件)
 
-    权重文件请联系我、汪所或者谭哲（周六发到qq邮箱的yolo压缩包就是）
+    权重文件请联系1214279441@qq.com
 
 5. 在yolov3根目录下，在git bash中运行
     ```
