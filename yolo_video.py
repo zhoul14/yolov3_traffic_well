@@ -3,6 +3,16 @@ import argparse
 from yolo import YOLO, detect_video
 from PIL import Image
 # import lane
+def detect_img_once(yolo,input_file,output_file):
+    try:
+        image = Image.open(input_file)
+    except:
+        print('Open Error! Try again!')
+    else:
+        r_image = yolo.detect_image(image)
+        r_image.save(output_file)
+    yolo.close_session()
+
 def detect_img(yolo):
     while True:
         img = input('Input image filename:')
@@ -45,6 +55,10 @@ if __name__ == '__main__':
         '--gpu_num', type=int,
         help='Number of GPU to use, default ' + str(YOLO.get_defaults("gpu_num"))
     )
+    parser.add_argument(
+        '--once', default=False, action="store_true",
+        help='One image detection mode'
+    )
 
     parser.add_argument(
         '--image', default=False, action="store_true",
@@ -73,6 +87,9 @@ if __name__ == '__main__':
         if "input" in FLAGS:
             print(" Ignoring remaining command line arguments: " + FLAGS.input + "," + FLAGS.output)
         detect_img(YOLO(**vars(FLAGS)))
+    elif FLAGS.once:
+        print("One image")
+        detect_img_once(YOLO(**vars(FLAGS)),FLAGS.input,FLAGS.output)
     elif "input" in FLAGS:
         detect_video(YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
     else:
