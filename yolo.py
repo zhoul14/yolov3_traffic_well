@@ -66,6 +66,8 @@ class YOLO(object):
         num_anchors = len(self.anchors)
         num_classes = len(self.class_names)
         is_tiny_version = num_anchors==6 # default setting
+        print(model_path)
+        self.yolo_model = load_model(model_path, compile=False)
         try:
             self.yolo_model = load_model(model_path, compile=False)
         except:
@@ -113,9 +115,9 @@ class YOLO(object):
         image_data = np.array(boxed_image, dtype='float32')
 
         print(image_data.shape)
+        print(K.learning_phase())
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)  # Add batch dimension.
-
         out_boxes, out_scores, out_classes = self.sess.run(
             [self.boxes, self.scores, self.classes],
             feed_dict={
