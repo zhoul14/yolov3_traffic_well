@@ -6,11 +6,11 @@
 </head>
     <body>
         <div>
-            <form method="post" action="http://localhost:5000/up_photo" enctype="multipart/form-data">
+            <form method="post" action="{{ url_for('api_upload')}}" enctype="multipart/form-data">
             <input type="file" size="30" name="photo"/>
             <br>
-            <input type="text" class="txt_input" name="name" style="margin-top:15px;"/>
-            <input type="submit" value="提交信息" class="button-new" style="margin-top:15px;"/>
+            <input type="text" class="txt_input" name="name" style="margin-top:25px;"/>
+            <input type="submit" value="提交待识别图片" class="button-new" style="margin-top:15px;"/>
             </form>
         </div>
     </body>
